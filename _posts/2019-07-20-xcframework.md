@@ -25,6 +25,7 @@ xcodebuild archive
 	-archivePath <PATH>
 	SKIP_INSTALL=NO
 ```
+  * Skip Install build setting, and set it to No.
 
 2. Xcode create xcframework
 ```
@@ -54,10 +55,22 @@ And since they behave like source code, then future versions of the Swift Compil
 3. the types that are part of the interface.
 	1. the public name property is included in the interface, but the private current location property is not.
 	2. the public initializer and the fly method are included in the interface
-	3. the class has a de-initializer in the interface
+	3. the class has a de-initializer in the interface. If this format is supposed to be stable across versions of the compiler, then the compiler should not make any assumptions about the underlying source code.
 4. Enum
 	1. the first thing to see is that both cases of the enum are included.
-	2. in the interface, there's an explicit conformance to Hashable.
+	2. in the interface, there's an explicit conformance to both Hashable and Equitable. in the spirit of being explicit, and not making assumptions, it's included in the Module Interface
+
+## Semantic Versioning
+- The smallest component is the Patch Version, and represents when you make bug fixes, or implementation changes to your framework that shouldn't affect your clients.
+  - No change to module interface without impacting the behavior of the class.
+- The middle component is for backwards compatible editions, new APIs, or new capabilities.
+  - New public API is added.
+	- Added a new case to an enum
+	- Made struct a Hashable.
+	- New stored property to the struct.
+- And the Major component is for any breaking changes that you have to make, whether that's source breaking, binary breaking, or semantics breaking in a way where clients will have to rebuild, and possibly redo some of their client code, in order to adopt the new version of the framework.
+  - adding a new parameter to the function, or signature of the function.
+	- a function is uniquely identified by its name, and its parameters. Both the argument labels, and the types.
 
 
 ## Investigate further
