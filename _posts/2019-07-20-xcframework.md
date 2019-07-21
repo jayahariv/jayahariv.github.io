@@ -72,7 +72,52 @@ And since they behave like source code, then future versions of the Swift Compil
   - adding a new parameter to the function, or signature of the function.
 	- a function is uniquely identified by its name, and its parameters. Both the argument labels, and the types.
 
+## Indirection
+1. function call to a framework
+  - at runtime is that the client is going to have to ask which method is the `fly` method? And the framework will respond, it's the `<second>` one.
+  - it's basically the same way that Objective-C does message dispatch, doing it in a call from one Library to another
+  - Swift only does it when you're crossing this client framework boundary
+2. use a struct or enum from the framework.
+  - the client can't assume that it knows how big the enum is going to be in memory. the client to ask the framework how big is it? And the framework responds, it's just one byte.
+	- one of the new cases added in the future might have associated values. client will also ask the framework to cleanup the enum value when it's done with it, and the framework will do so.
 
-## Investigate further
+## Additional performance
+There's three ways to do that: inlinable functions, frozen enums, and frozen structs.
+1. inlinable function
+	```
+	@inlinable
+	func someFunctionName() {
+		// do some action inside this
+		return self.capacity < totalCapacity
+	}
+
+	@usableFromInline
+	internal var capacity: Int
+	```
+
+  - So, as a rule of thumb, if you're a framework author who has made a function inlinable, make sure not to change the output or observable behavior.
+	- It's okay to add a better algorithm, or some additional fast pads, but if you change the observable behavior of the function, then you could end up with these really subtle problems that are only visible at runtime, and possibly only under certain inputs.
+2. Swift enum
+	 So by marking this enum with the frozen attribute, then I as the framework author can promise that there are no new cases added in future releases of the framework.
+	 ```
+	 @frozen public enum SomEnumName {
+		 case someCaseNumber1
+		 case someCaseNumber2
+	 }
+	 ```
+	 - The clients are able to assume that this enum won't have any additional cases and won't require any cleanup.
+	 - adding a new case to a frozen enum is both source and binary breaking and requires incrementing the Major Version and asking all clients to recompile.
+
+3. Swift Struct
+  By default, a Struct in a binary framework can have new stored properties added, or the existing ones reordered without any trouble, but that does result in that same sort of handshake and extra communication between the client and the framework.
+	```
+	@frozen public struct SomeStructName {
+		public var someProp
+	}
+	```
+	-  And the other thing that this does is require that the stored properties all have types that are public, or usable from inline.
+
+
+## More info needed
 * You can also have a variant for Mac apps that use AppKit, and a variant for Mac apps that use UIKit.
 * And not only can you bundle up frameworks, but you can also use XCFrameworks to bundle up static libraries, and their corresponding headers.
