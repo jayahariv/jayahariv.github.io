@@ -11,6 +11,8 @@ Stash the changes in a dirty working directory away
 `git config alias.supdate 'submodule update --remote --merge'`
 
 # bash git alias
+
+```
 alias br="git branch "
 alias ck="git checkout "
 alias cr="git checkout -b "
@@ -33,3 +35,4 @@ alias update='git submodule update --init --recursive'
 alias ckm='ck master'
 alias hh='git rev-parse HEAD'
 alias clean='git clean -f -d'
+```
