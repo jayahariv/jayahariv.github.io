@@ -1,7 +1,7 @@
 ---
 layout: post
 author: jayahariv
-title: XCFramework
+title: xcframework
 ---
 
 # XCFramework

@@ -1,7 +1,7 @@
 ---
 layout: post
 author: jayahariv
-title: Grand Central Dispatch
+title: grand central dispatch
 ---
 
 [WWDC](https://developer.apple.com/videos/play/wwdc2017/706/)
