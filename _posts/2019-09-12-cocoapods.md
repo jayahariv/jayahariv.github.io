@@ -86,3 +86,7 @@ CocoaPods is written in Ruby and actually is made of several Ruby Gems.
   - Pods.xcodeproj
   - Podfile.lock, resolved versions of the pods.
   - Manifest.lock, Pods directory is not under versioning, this file helps to achieve same.
+
+
+## Misc
+- Search pods: `pod search couchbaselite-swift --simple`
